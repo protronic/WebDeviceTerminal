@@ -47,9 +47,10 @@ export class AppComponent implements AfterViewInit, Observer<Object> {
       } else if (input === '\u0003') { // End of Text (When Ctrl and C are pressed)
         this.child.write('^C');
         this.child.write(this.prompt);
-      } else
+      } else {
         this.child.write(input);
-      this.buffer += input;
+        this.buffer += input;
+      }
     });
   }
 
