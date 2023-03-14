@@ -11,10 +11,16 @@ export class AppComponent implements AfterViewInit {
   readonly title = 'ble-terminal';
   readonly prompt = '\n' + FunctionsUsingCSI.cursorColumn(1) + '$ ';
   @ViewChild('term', { static: false }) child!: NgTerminal;
+  buffer = '';
 
   ngAfterViewInit(): void {
+    this.child.write(this.prompt);
     this.child.onData().subscribe((input) => {
       if (input === '\r') { // Carriage Return (When Enter is pressed)
+
+        console.log(this.buffer);
+        this.buffer = '',
+
         this.child.write(this.prompt);
       } else if (input === '\u007f') { // Delete (When Backspace is pressed)
         if (this.child.underlying.buffer.active.cursorX > 2) {
@@ -25,6 +31,7 @@ export class AppComponent implements AfterViewInit {
         this.child.write(this.prompt);
       } else
         this.child.write(input);
+        this.buffer += input;
     });
   }
 }
