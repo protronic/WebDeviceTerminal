@@ -26,10 +26,19 @@ export class AppComponent implements AfterViewInit, Observer<Object> {
     this.child.write(this.prompt);
     this.child.onData().subscribe((input) => {
       if (input === '\r') { // Carriage Return (When Enter is pressed)
-        console.log('TRY write:' + this.buffer);
-        this.ble.write(this.buffer);
-        this.buffer = '';
 
+        switch (this.buffer) {
+          case 'connect':
+            console.log('TRY connect');
+            this.ble.connectButtonPressed();
+            break;
+
+          default:
+            console.log('TRY write:' + this.buffer);
+            this.ble.write(this.buffer);
+            break;
+        }
+        this.buffer = '';
         this.child.write(this.prompt);
       } else if (input === '\u007f') { // Delete (When Backspace is pressed)
         if (this.child.underlying.buffer.active.cursorX > 2) {
@@ -42,7 +51,6 @@ export class AppComponent implements AfterViewInit, Observer<Object> {
         this.child.write(input);
       this.buffer += input;
     });
-    this.ble.connectButtonPressed();
   }
 
   next(bleMessage: Object) {
