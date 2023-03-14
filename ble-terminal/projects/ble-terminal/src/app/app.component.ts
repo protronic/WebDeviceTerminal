@@ -1,5 +1,8 @@
 import { AfterViewInit, Component, ViewChild } from '@angular/core';
 import { FunctionsUsingCSI, NgTerminal } from 'ng-terminal';
+import { BluetoothCore } from '@manekinekko/angular-web-bluetooth';
+import { Observer } from 'rxjs';
+import { BleService } from './ble.service';
 
 @Component({
   selector: 'app-root',
@@ -7,19 +10,25 @@ import { FunctionsUsingCSI, NgTerminal } from 'ng-terminal';
   styleUrls: ['./app.component.css']
 })
 
-export class AppComponent implements AfterViewInit {
+export class AppComponent implements AfterViewInit, Observer<Object> {
   readonly title = 'ble-terminal';
   readonly prompt = '\n' + FunctionsUsingCSI.cursorColumn(1) + '$ ';
   @ViewChild('term', { static: false }) child!: NgTerminal;
   buffer = '';
+  ble: BleService;
+
+  constructor() {
+    this.ble = new BleService();
+    this.ble.subject.subscribe(this);
+  }
 
   ngAfterViewInit(): void {
     this.child.write(this.prompt);
     this.child.onData().subscribe((input) => {
       if (input === '\r') { // Carriage Return (When Enter is pressed)
-
-        console.log(this.buffer);
-        this.buffer = '',
+        console.log('TRY write:' + this.buffer);
+        this.ble.write(this.buffer);
+        this.buffer = '';
 
         this.child.write(this.prompt);
       } else if (input === '\u007f') { // Delete (When Backspace is pressed)
@@ -31,7 +40,16 @@ export class AppComponent implements AfterViewInit {
         this.child.write(this.prompt);
       } else
         this.child.write(input);
-        this.buffer += input;
+      this.buffer += input;
     });
+    this.ble.connectButtonPressed();
   }
+
+  next(bleMessage: Object) {
+    console.log(bleMessage);
+    this.child.write(bleMessage.toString());
+    this.child.write(this.prompt);
+  };
+  error(err: any) { this.next(err) };
+  complete!: () => void;
 }

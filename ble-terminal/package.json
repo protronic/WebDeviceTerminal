@@ -18,6 +18,7 @@
     "@angular/platform-browser": "^15.2.0",
     "@angular/platform-browser-dynamic": "^15.2.0",
     "@angular/router": "^15.2.0",
+    "@manekinekko/angular-web-bluetooth": "^15.0.0",
     "@types/web-bluetooth": "^0.0.16",
     "ng-terminal": "^5.5.0",
     "rxjs": "~7.8.0",
