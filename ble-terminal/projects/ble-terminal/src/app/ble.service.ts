@@ -8,7 +8,7 @@ const UART_SERVICE_UUID = '0000fe40-cc7a-482a-984a-7f2ed5b3e58f';
 
 // Allows the micro:bit to transmit a byte array
 //const UART_TX_CHARACTERISTIC_UUID = 'd973f2e1-b19e-11e2-9e96-0800200c9a66';
-const UART_TX_CHARACTERISTIC_UUID = '0000fe41-8e22-4541-9d4c-21edae82ed19';
+const UART_TX_CHARACTERISTIC_UUID = '0000fe42-8e22-4541-9d4c-21edae82ed19';
 
 // Allows a connected client to send a byte array
 //const UART_RX_CHARACTERISTIC_UUID = 'd973f2e2-b19e-11e2-9e96-0800200c9a66';
