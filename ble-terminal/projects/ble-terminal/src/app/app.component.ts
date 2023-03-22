@@ -45,12 +45,14 @@ export class AppComponent implements AfterViewInit, Observer<Object> {
           case '\u007f': // Delete (When Backspace is pressed)
             if (this.child.underlying.buffer.active.cursorX > 2) {
               this.child.write('\b \b');
+              this.buffer = this.buffer.substring(0, this.buffer.length - 1);
             }
             break;
 
           case '\u0003':   // End of Text (When Ctrl and C are pressed)
             this.child.write('^C');
             this.child.write(this.prompt);
+            this.buffer = '';
             break;
 
           default:  // Alle weiteren Eingaben werden gepuffert
