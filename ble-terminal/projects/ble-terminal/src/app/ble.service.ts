@@ -93,6 +93,10 @@ export class BleService {
     }
   }
 
+  isConnected() : Boolean{
+    return !!this.rxCharacteristic;
+  }
+
   async write(data: string) {
     if (!this.rxCharacteristic) {
       return;
