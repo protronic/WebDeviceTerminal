@@ -24,41 +24,41 @@ export class AppComponent implements AfterViewInit, Observer<Object> {
 
   ngAfterViewInit(): void {
     this.child.write(this.prompt);
-    this.child.onData().subscribe((input) => {
-      if (input === '\r') { // Carriage Return (When Enter is pressed)
+    this.child.onData().subscribe((input) => { // Callback für Eingaben im Terminal
+      if (input === '\r') {             // Carriage Return (When Enter is pressed)
 
-        switch (this.buffer) {
+        switch (this.buffer) {          // Parsen von Steuerer Befehlen aus Puffer
           case 'connect':
-            console.log('TRY connect');
+            console.log('BLE connect');
             this.ble.connectButtonPressed();
             break;
 
-          default:
-            console.log('TRY write:' + this.buffer);
+          default:                      // Falls sich kein Befahlt im Puffer befindet wird gesendet
+            console.log('BLE write:' + this.buffer);
             this.ble.write(this.buffer);
             break;
         }
-        this.buffer = '';
-        this.child.write(this.prompt);
-      } else if (input === '\u007f') { // Delete (When Backspace is pressed)
+        this.buffer = '';               // Puffer leeren
+        this.child.write(this.prompt);  // Neuer Promt
+      } else if (input === '\u007f') {  // Delete (When Backspace is pressed)
         if (this.child.underlying.buffer.active.cursorX > 2) {
           this.child.write('\b \b');
         }
-      } else if (input === '\u0003') { // End of Text (When Ctrl and C are pressed)
+      } else if (input === '\u0003') {  // End of Text (When Ctrl and C are pressed)
         this.child.write('^C');
         this.child.write(this.prompt);
-      } else {
+      } else {                          // Alle weiteren Eingaben werden gepuffert und da bei Enter gesendet
         this.child.write(input);
         this.buffer += input;
       }
     });
   }
 
-  next(bleMessage: Object) {
+  next(bleMessage: Object) {            // Callback für Daten von BLE
     console.log(bleMessage);
     this.child.write(bleMessage.toString());
     this.child.write(this.prompt);
   };
-  error(err: any) { this.next(err) };
+  error(err: any) { this.next(err) };   // Callback für Felher vom BLE service
   complete!: () => void;
 }
