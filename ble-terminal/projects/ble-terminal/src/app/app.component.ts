@@ -25,27 +25,39 @@ export class AppComponent implements AfterViewInit, Observer<Object> {
   ngAfterViewInit(): void {
     this.child.write(this.prompt);
     this.child.onData().subscribe((input) => { // Callback für Eingaben im Terminal
-      switch (input) {
-        case '\r': // Carriage Return (When Enter is pressed)
-          this.handleBuffer();  // Neuer Promt
-          break;
+      if (this.ble.isConnected()) {
+        switch (input) {
+          case '\u0003':   // End of Text (When Ctrl and C are pressed) disconnect BLE
+            this.ble.disconnectButtonPressed();
+            break;
 
-        case '\u007f': // Delete (When Backspace is pressed)
-          if (this.child.underlying.buffer.active.cursorX > 2) {
-            this.child.write('\b \b');
-          }
-          break;
+          default:  // Alle weiteren Eingaben werden gesendet
+            this.child.write(input);
+            this.ble.write(input);
+            break;
+        }
+      } else
+        switch (input) {
+          case '\r': // Carriage Return (When Enter is pressed)
+            this.handleBuffer();
+            break;
 
-        case '\u0003':   // End of Text (When Ctrl and C are pressed)
-          this.child.write('^C');
-          this.child.write(this.prompt);
-          break;
+          case '\u007f': // Delete (When Backspace is pressed)
+            if (this.child.underlying.buffer.active.cursorX > 2) {
+              this.child.write('\b \b');
+            }
+            break;
 
-        default:  // Alle weiteren Eingaben werden gepuffert und da bei Enter gesendet
-          this.child.write(input);
-          this.buffer += input;
-          break;
-      }
+          case '\u0003':   // End of Text (When Ctrl and C are pressed)
+            this.child.write('^C');
+            this.child.write(this.prompt);
+            break;
+
+          default:  // Alle weiteren Eingaben werden gepuffert
+            this.child.write(input);
+            this.buffer += input;
+            break;
+        }
     });
   }
 
@@ -57,12 +69,12 @@ export class AppComponent implements AfterViewInit, Observer<Object> {
         break;
 
       default: // Falls sich kein Befahlt im Puffer befindet wird gesendet
-        console.log('BLE write:' + this.buffer);
-        this.ble.write(this.buffer);
+        // console.log('BLE write:' + this.buffer);
+        // this.ble.write(this.buffer);
         break;
     }
     this.buffer = ''; // Puffer leeren
-    this.child.write(this.prompt);
+    this.child.write(this.prompt); // Neuer Promt
   }
 
   next(bleMessage: Object) {            // Callback für Daten von BLE
