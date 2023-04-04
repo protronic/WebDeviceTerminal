@@ -4,15 +4,18 @@ import { fromEvent, Subject } from 'rxjs';
 // https://lancaster-university.github.io/microbit-docs/resources/bluetooth/bluetooth_profile.html
 // An implementation of Nordic Semicondutor's UART/Serial Port Emulation over Bluetooth low energy
 //const UART_SERVICE_UUID = 'd973f2e0-b19e-11e2-9e96-0800200c9a66';
-const UART_SERVICE_UUID = '0000fe40-cc7a-482a-984a-7f2ed5b3e58f';
+const UART_SERVICE_UUID = '0000fe40-cc7a-482a-984a-7f2ed5b3e58f';   // P2P
+//const UART_SERVICE_UUID   = '0000fe60-cc7a-482a-984a-7f2ed5b3e58f';   // CRS - Cable Replacement Service
 
 // Allows the micro:bit to transmit a byte array
 //const UART_TX_CHARACTERISTIC_UUID = 'd973f2e1-b19e-11e2-9e96-0800200c9a66';
-const UART_TX_CHARACTERISTIC_UUID = '0000fe42-8e22-4541-9d4c-21edae82ed19';
+const UART_TX_CHARACTERISTIC_UUID = '0000fe42-8e22-4541-9d4c-21edae82ed19';   // P2P
+//const UART_TX_CHARACTERISTIC_UUID   = '0000fe61-8e22-4541-9d4c-21edae82ed19';   // CRS - Cable Replacement Service
 
 // Allows a connected client to send a byte array
 //const UART_RX_CHARACTERISTIC_UUID = 'd973f2e2-b19e-11e2-9e96-0800200c9a66';
-const UART_RX_CHARACTERISTIC_UUID = '0000fe41-8e22-4541-9d4c-21edae82ed19';
+const UART_RX_CHARACTERISTIC_UUID = '0000fe41-8e22-4541-9d4c-21edae82ed19';   // P2P
+//const UART_RX_CHARACTERISTIC_UUID   = '0000fe62-8e22-4541-9d4c-21edae82ed19';   // CRS - Cable Replacement Service
 
 
 @Injectable({
