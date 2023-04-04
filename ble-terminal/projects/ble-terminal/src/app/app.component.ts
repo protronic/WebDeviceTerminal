@@ -13,7 +13,8 @@ import { BleService } from './ble.service';
 export class AppComponent implements AfterViewInit, Observer<Object> {
   readonly title = 'ble-terminal';
   readonly prompt = '\n' + FunctionsUsingCSI.cursorColumn(1) + '$ ';
-  @ViewChild('term', { static: false }) child!: NgTerminal;
+  @ViewChild('interm', { static: false }) inchild!: NgTerminal;
+  @ViewChild('outerm', { static: false }) outchild!: NgTerminal;
   buffer = '';
   ble: BleService;
 
@@ -23,8 +24,8 @@ export class AppComponent implements AfterViewInit, Observer<Object> {
   }
 
   ngAfterViewInit(): void {
-    this.child.write(this.prompt);
-    this.child.onData().subscribe((input) => { // Callback für Eingaben im Terminal
+    this.outchild.write(this.prompt);
+    this.outchild.onData().subscribe((input) => { // Callback für Eingaben im Terminal
       if (this.ble.isConnected()) {
         switch (input) {
           case '\u0003':   // End of Text (When Ctrl and C are pressed) disconnect BLE
@@ -32,7 +33,7 @@ export class AppComponent implements AfterViewInit, Observer<Object> {
             break;
 
           default:  // Alle weiteren Eingaben werden gesendet
-            this.child.write(input);
+            this.outchild.write(input);
             this.ble.write(input);
             break;
         }
@@ -43,20 +44,20 @@ export class AppComponent implements AfterViewInit, Observer<Object> {
             break;
 
           case '\u007f': // Delete (When Backspace is pressed)
-            if (this.child.underlying.buffer.active.cursorX > 2) {
-              this.child.write('\b \b');
+            if (this.outchild.underlying.buffer.active.cursorX > 2) {
+              this.outchild.write('\b \b');
               this.buffer = this.buffer.substring(0, this.buffer.length - 1);
             }
             break;
 
           case '\u0003':   // End of Text (When Ctrl and C are pressed)
-            this.child.write('^C');
-            this.child.write(this.prompt);
+            this.outchild.write('^C');
+            this.outchild.write(this.prompt);
             this.buffer = '';
             break;
 
           default:  // Alle weiteren Eingaben werden gepuffert
-            this.child.write(input);
+            this.outchild.write(input);
             this.buffer += input;
             break;
         }
@@ -66,6 +67,7 @@ export class AppComponent implements AfterViewInit, Observer<Object> {
   private handleBuffer() {
     switch (this.buffer) { // Parsen von Steuerer Befehlen aus Puffer
       case 'connect':
+      case 'con':
         console.log('BLE connect');
         this.ble.connectButtonPressed();
         break;
@@ -76,14 +78,13 @@ export class AppComponent implements AfterViewInit, Observer<Object> {
         break;
     }
     this.buffer = ''; // Puffer leeren
-    this.child.write(this.prompt); // Neuer Promt
+    this.outchild.write(this.prompt); // Neuer Promt
   }
 
   next(bleMessage: Object) {            // Callback für Daten von BLE
     console.log(bleMessage);
-    this.child.write(bleMessage.toString());
-    if (bleMessage.toString() === '\r\n')
-      this.child.write(this.prompt);
+    this.inchild.write(bleMessage.toString());
+    this.outchild.write(this.prompt);
   };
   error(err: any) { this.next(err) };   // Callback für Felher vom BLE service
   complete!: () => void;
