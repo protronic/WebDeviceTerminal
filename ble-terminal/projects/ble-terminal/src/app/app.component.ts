@@ -82,7 +82,8 @@ export class AppComponent implements AfterViewInit, Observer<Object> {
   next(bleMessage: Object) {            // Callback für Daten von BLE
     console.log(bleMessage);
     this.child.write(bleMessage.toString());
-    this.child.write(this.prompt);
+    if (bleMessage.toString() === '\r\n')
+      this.child.write(this.prompt);
   };
   error(err: any) { this.next(err) };   // Callback für Felher vom BLE service
   complete!: () => void;
