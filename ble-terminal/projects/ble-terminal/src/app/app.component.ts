@@ -4,6 +4,9 @@ import { Observer } from 'rxjs';
 import { BleService } from './ble.service';
 import { TerminalConnector } from './terminal-connector';
 import { WsService } from './ws.service';
+import { JsonCompactPipe } from './json-compact-pipe';
+
+const JsonCompact = new JsonCompactPipe();
 
 @Component({
   selector: 'app-root',
@@ -102,7 +105,10 @@ export class AppComponent implements AfterViewInit, Observer<Object> {
 
   next(bleMessage: Object) {            // Callback für Daten von BLE
     console.log(bleMessage);
-    this.inchild.write(bleMessage.toString());
+    if (typeof bleMessage === 'string')
+      this.inchild.write(bleMessage);
+    else
+      this.inchild.write(JsonCompact.transform(bleMessage) + '\r\n');
   };
   error(err: any) { this.next(err) };   // Callback für Felher vom BLE service
   complete!: () => void;
