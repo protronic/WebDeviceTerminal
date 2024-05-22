@@ -60,10 +60,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "ble-terminal:build:production"
+              "buildTarget": "ble-terminal:build:production"
             },
             "development": {
-              "browserTarget": "ble-terminal:build:development"
+              "buildTarget": "ble-terminal:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -71,7 +71,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "ble-terminal:build"
+            "buildTarget": "ble-terminal:build"
           }
         },
         "test": {

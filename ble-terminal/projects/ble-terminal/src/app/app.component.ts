@@ -1,6 +1,5 @@
 import { AfterViewInit, Component, ViewChild } from '@angular/core';
 import { FunctionsUsingCSI, NgTerminal } from 'ng-terminal';
-import { BluetoothCore } from '@manekinekko/angular-web-bluetooth';
 import { Observer } from 'rxjs';
 import { BleService } from './ble.service';
 
@@ -44,7 +43,7 @@ export class AppComponent implements AfterViewInit, Observer<Object> {
             break;
 
           case '\u007f': // Delete (When Backspace is pressed)
-            if (this.outchild.underlying.buffer.active.cursorX > 2) {
+            if (this.outchild.underlying!.buffer.active.cursorX > 2) {
               this.outchild.write('\b \b');
               this.buffer = this.buffer.substring(0, this.buffer.length - 1);
             }
