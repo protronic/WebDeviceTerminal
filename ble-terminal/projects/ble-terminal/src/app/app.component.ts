@@ -2,6 +2,8 @@ import { AfterViewInit, Component, ViewChild } from '@angular/core';
 import { FunctionsUsingCSI, NgTerminal } from 'ng-terminal';
 import { Observer } from 'rxjs';
 import { BleService } from './ble.service';
+import { TerminalConnector } from './terminal-connector';
+import { WsService } from './ws.service';
 
 @Component({
   selector: 'app-root',
@@ -15,25 +17,25 @@ export class AppComponent implements AfterViewInit, Observer<Object> {
   @ViewChild('interm', { static: false }) inchild!: NgTerminal;
   @ViewChild('outerm', { static: false }) outchild!: NgTerminal;
   buffer = '';
-  ble: BleService;
+  connectionService: TerminalConnector | undefined;
 
   constructor() {
-    this.ble = new BleService();
-    this.ble.subject.subscribe(this);
+
   }
 
   ngAfterViewInit(): void {
     this.outchild.write(this.prompt);
     this.outchild.onData().subscribe((input) => { // Callback für Eingaben im Terminal
-      if (this.ble.isConnected()) {
+      if (this.connectionService?.isConnected()) {
         switch (input) {
           case '\u0003':   // End of Text (When Ctrl and C are pressed) disconnect BLE
-            this.ble.disconnectButtonPressed();
+            this.connectionService.disconnect();
+            this.connectionService = undefined;
             break;
 
           default:  // Alle weiteren Eingaben werden gesendet
             this.outchild.write(input);
-            this.ble.write(input);
+            this.connectionService.write(input);
             break;
         }
       } else
@@ -67,8 +69,26 @@ export class AppComponent implements AfterViewInit, Observer<Object> {
     switch (this.buffer) { // Parsen von Steuerer Befehlen aus Puffer
       case 'connect':
       case 'con':
-        console.log('BLE connect');
-        this.ble.connectButtonPressed();
+      case 'ble':
+      case 'bluetooth':
+        if (this.connectionService?.isConnected()) {
+
+        } else {
+          console.log('BLE connect');
+          this.connectionService = new BleService();
+          this.connectionService.connect(this);
+        }
+        break;
+
+      case 'ws':
+      case 'wss':
+        if (this.connectionService?.isConnected()) {
+
+        } else {
+          console.log('BLE connect');
+          this.connectionService = new WsService();
+          this.connectionService.connect(this, 'lsm6');
+        }
         break;
 
       default: // Falls sich kein Befahlt im Puffer befindet wird gesendet

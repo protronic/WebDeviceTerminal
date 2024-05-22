@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { fromEvent, Subject } from 'rxjs';
+import { fromEvent, Observer, Subject } from 'rxjs';
+import { TerminalConnector } from './terminal-connector';
 
 // https://lancaster-university.github.io/microbit-docs/resources/bluetooth/bluetooth_profile.html
 // An implementation of Nordic Semicondutor's UART/Serial Port Emulation over Bluetooth low energy
@@ -21,16 +22,18 @@ const UART_RX_CHARACTERISTIC_UUID = '0000fe41-8e22-4541-9d4c-21edae82ed19';   //
 @Injectable({
   providedIn: 'root',
 })
-export class BleService {
+export class BleService implements TerminalConnector {
+
   uBitDevice: BluetoothDevice | undefined;
   rxCharacteristic: BluetoothRemoteGATTCharacteristic | undefined;
   subject: Subject<Object>;
 
-  constructor(){
+  constructor() {
     this.subject = new Subject();
   }
 
-  async connectButtonPressed() {
+  async connect(observable: Observer<Object>) {
+    this.subject.subscribe(observable);
     try {
       this.subject.next('Requesting Bluetooth Device...');
       this.uBitDevice = await navigator.bluetooth.requestDevice({
@@ -54,7 +57,7 @@ export class BleService {
       txCharacteristic.startNotifications();
       fromEvent(txCharacteristic, 'characteristicvaluechanged').subscribe(
         (event: any) => {
-          if(!event || !event.target || !event.target.value)
+          if (!event || !event.target || !event.target.value)
             return;
           let receivedData = [];
           for (var i = 0; i < event.target.value.byteLength; i++) {
@@ -85,7 +88,7 @@ export class BleService {
     }
   }
 
-  disconnectButtonPressed() {
+  disconnect() {
     if (!this.uBitDevice || !this.uBitDevice.gatt) {
       return;
     }
@@ -96,7 +99,7 @@ export class BleService {
     }
   }
 
-  isConnected() : Boolean{
+  isConnected(): boolean {
     return !!this.rxCharacteristic;
   }
 
