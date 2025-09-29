@@ -4,6 +4,7 @@ import { Observer } from 'rxjs';
 import { BleService } from './ble.service';
 import { TerminalConnector } from './terminal-connector';
 import { WsService } from './ws.service';
+import { WebSerialService } from './web-serial.service';
 import { JsonCompactPipe } from './json-compact-pipe';
 
 const JsonCompact = new JsonCompactPipe();
@@ -91,6 +92,17 @@ export class AppComponent implements AfterViewInit, Observer<Object> {
           console.log('BLE connect');
           this.connectionService = new WsService();
           this.connectionService.connect(this, 'lsm6');
+        }
+        break;
+
+      case 'serial':
+      case 'ser':
+        if (this.connectionService?.isConnected()) {
+
+        } else {
+          console.log('BLE connect');
+          this.connectionService = new WebSerialService();
+          this.connectionService.connect(this);
         }
         break;
 
