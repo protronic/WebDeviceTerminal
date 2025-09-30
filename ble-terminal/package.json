@@ -20,6 +20,7 @@
     "@angular/platform-browser-dynamic": "^17.3.9",
     "@angular/router": "^17.3.9",
     "@manekinekko/angular-web-bluetooth": "^17.1.0",
+    "@types/w3c-web-serial": "^1.0.8",
     "@types/web-bluetooth": "^0.0.20",
     "ng-terminal": "^6.1.1",
     "ngx-web-serial": "^0.0.3",
