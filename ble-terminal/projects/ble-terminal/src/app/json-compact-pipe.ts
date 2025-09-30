@@ -10,7 +10,8 @@ declare type Tok = {
 }
 
 @Pipe({
-  name: 'jsonCompact'
+    name: 'jsonCompact',
+    standalone: false
 })
 
 export class JsonCompactPipe implements PipeTransform {
