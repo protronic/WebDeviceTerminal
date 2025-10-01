@@ -26,7 +26,7 @@ export class WebSerialService implements TerminalConnector {
   }
 
   disconnect() {
-
+    this.serial.close();
   }
 
   write(data: string): void {
