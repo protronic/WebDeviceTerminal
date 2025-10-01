@@ -167,13 +167,6 @@
     ora "8.2.0"
     rxjs "7.8.2"
 
-"@angular/animations@^18.2.14":
-  version "18.2.14"
-  resolved "https://registry.yarnpkg.com/@angular/animations/-/animations-18.2.14.tgz#34a52537aff5def9ab92bc9e9001e9757336f4fe"
-  integrity sha512-Kp/MWShoYYO+R3lrrZbZgszbbLGVXHB+39mdJZwnIuZMDkeL3JsIBlSOzyJRTnpS1vITc+9jgHvP/6uKbMrW1Q==
-  dependencies:
-    tslib "^2.3.0"
-
 "@angular/animations@^20.3.2":
   version "20.3.2"
   resolved "https://registry.yarnpkg.com/@angular/animations/-/animations-20.3.2.tgz#5aba1f45eea4083208c8f7410c6fad9d0f74bd24"
@@ -239,13 +232,6 @@
     yargs "18.0.0"
     zod "3.25.76"
 
-"@angular/common@^18.2.14":
-  version "18.2.14"
-  resolved "https://registry.yarnpkg.com/@angular/common/-/common-18.2.14.tgz#d4ff0b2b7aabb17339bd9d304bbc5aca90d226e3"
-  integrity sha512-ZPRswzaVRiqcfZoowuAM22Hr2/z10ajWOUoFDoQ9tWqz/fH/773kJv2F9VvePIekgNPCzaizqv9gF6tGNqaAwg==
-  dependencies:
-    tslib "^2.3.0"
-
 "@angular/common@^20.3.2":
   version "20.3.2"
   resolved "https://registry.yarnpkg.com/@angular/common/-/common-20.3.2.tgz#ffed57442a2d23221c2e058df310497c1d23c2bb"
@@ -267,24 +253,10 @@
     tslib "^2.3.0"
     yargs "^18.0.0"
 
-"@angular/compiler@^18.2.14":
-  version "18.2.14"
-  resolved "https://registry.yarnpkg.com/@angular/compiler/-/compiler-18.2.14.tgz#670330172214b4d336a5edc8ee989ac647f73a0b"
-  integrity sha512-Mpq3v/mztQzGAQAAFV+wAI1hlXxZ0m8eDBgaN2kD3Ue+r4S6bLm1Vlryw0iyUnt05PcFIdxPT6xkcphq5pl6lw==
-  dependencies:
-    tslib "^2.3.0"
-
 "@angular/compiler@^20.3.2":
   version "20.3.2"
   resolved "https://registry.yarnpkg.com/@angular/compiler/-/compiler-20.3.2.tgz#0e236145ba9369b16c3dc371df7462c5cc7d96cc"
   integrity sha512-5fSzkPmRomZ9H43c82FJWLwdOi7MICMimP1y1oYJZcUh3jYRhXUrQvD0jifdRVkkgKNjaZYlMr0NkrYQFgFong==
-  dependencies:
-    tslib "^2.3.0"
-
-"@angular/core@^18.2.14":
-  version "18.2.14"
-  resolved "https://registry.yarnpkg.com/@angular/core/-/core-18.2.14.tgz#510a86712a7bdf5dc02becb2ec5f94dc2024138e"
-  integrity sha512-BIPrCs93ZZTY9ym7yfoTgAQ5rs706yoYeAdrgc8kh/bDbM9DawxKlgeKBx2FLt09Y0YQ1bFhKVp0cV4gDEaMxQ==
   dependencies:
     tslib "^2.3.0"
 
@@ -302,24 +274,10 @@
   dependencies:
     tslib "^2.3.0"
 
-"@angular/platform-browser-dynamic@^18.2.14":
-  version "18.2.14"
-  resolved "https://registry.yarnpkg.com/@angular/platform-browser-dynamic/-/platform-browser-dynamic-18.2.14.tgz#5322b7e0d2c9bb1cc67fce0b22dcde9a12594898"
-  integrity sha512-QOv+o89u8HLN0LG8faTIVHKBxfkOBHVDB0UuXy19+HJofWZGGvho+vGjV0/IAkhZnMC4Sxdoy/mOHP2ytALX3A==
-  dependencies:
-    tslib "^2.3.0"
-
 "@angular/platform-browser-dynamic@^20.3.2":
   version "20.3.2"
   resolved "https://registry.yarnpkg.com/@angular/platform-browser-dynamic/-/platform-browser-dynamic-20.3.2.tgz#f18551d38fded9ed84a3101ea8abb1726927893b"
   integrity sha512-ehoV67Vxr3ZE8BJ3g7Q4ZLHo3qJVoDUDz/4UeCqmDeOnKxcdD53HTA/pgOO4QhKStUFbzgU19OQD4e6fkP8YoQ==
-  dependencies:
-    tslib "^2.3.0"
-
-"@angular/platform-browser@^18.2.14":
-  version "18.2.14"
-  resolved "https://registry.yarnpkg.com/@angular/platform-browser/-/platform-browser-18.2.14.tgz#fcccf20d843be580a33e1da4af3d7b19cc61f1e2"
-  integrity sha512-W+JTxI25su3RiZVZT3Yrw6KNUCmOIy7OZIZ+612skPgYK2f2qil7VclnW1oCwG896h50cMJU/lnAfxZxefQgyQ==
   dependencies:
     tslib "^2.3.0"
 
@@ -3973,19 +3931,11 @@ ng-terminal@^6.5.0:
     angular-resizable-element "^5.0.0"
     tslib "^2.3.0"
 
-"ngx-web-serial@git+https://github.com/protronic/ngx-web-serial.git":
+"ngx-web-serial@git+https://github.com/protronic/ngx-web-serial.git#v0.0.3":
   version "0.0.3"
-  resolved "git+https://github.com/protronic/ngx-web-serial.git#043503c02b926b5605426cb4e6c24fd69f9ec276"
+  resolved "git+https://github.com/protronic/ngx-web-serial.git#e47f07379a5e5077124060cfef5f34c8960e4792"
   dependencies:
-    "@angular/animations" "^18.2.14"
-    "@angular/common" "^18.2.14"
-    "@angular/compiler" "^18.2.14"
-    "@angular/core" "^18.2.14"
-    "@angular/platform-browser" "^18.2.14"
-    "@angular/platform-browser-dynamic" "^18.2.14"
-    rxjs "~7.8.0"
     tslib "^2.3.0"
-    zone.js "~0.14.3"
 
 node-addon-api@^6.1.0:
   version "6.1.0"
@@ -4520,7 +4470,7 @@ router@^2.2.0:
     parseurl "^1.3.3"
     path-to-regexp "^8.0.0"
 
-rxjs@7.8.2, rxjs@~7.8.0:
+rxjs@7.8.2:
   version "7.8.2"
   resolved "https://registry.yarnpkg.com/rxjs/-/rxjs-7.8.2.tgz#955bc473ed8af11a002a2be52071bf475638607b"
   integrity sha512-dhKf903U/PQZY6boNNtAGdWbG85WAbjT/1xYoZIC7FAY0yWapOBQVsVrDl58W86//e1VpMNBtRV4MaXfdMySFA==
@@ -5297,11 +5247,6 @@ zod@3.25.76, zod@^3.23.8:
   version "3.25.76"
   resolved "https://registry.yarnpkg.com/zod/-/zod-3.25.76.tgz#26841c3f6fd22a6a2760e7ccb719179768471e34"
   integrity sha512-gzUt/qt81nXsFGKIFcC3YnfEAx5NkunCfnDlvuBSSFS02bcXu4Lmea0AFIUwbLWxWPx3d9p8S5QoaujKcNQxcQ==
-
-zone.js@~0.14.3:
-  version "0.14.10"
-  resolved "https://registry.yarnpkg.com/zone.js/-/zone.js-0.14.10.tgz#23b8b29687c6bffece996e5ee5b854050e7775c8"
-  integrity sha512-YGAhaO7J5ywOXW6InXNlLmfU194F8lVgu7bRntUF3TiG8Y3nBK0x1UJJuHUP/e8IyihkjCYqhCScpSwnlaSRkQ==
 
 zone.js@~0.15.1:
   version "0.15.1"
