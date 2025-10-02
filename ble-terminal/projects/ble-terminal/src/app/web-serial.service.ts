@@ -13,7 +13,6 @@ export class WebSerialService implements TerminalConnector {
   private dataSubscription?: Subscription;
   private connSubscription?: Subscription;
 
-
   constructor(private serial: NgxWebSerial) { }
 
   isConnected(): boolean {
