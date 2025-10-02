@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { TerminalConnector } from './terminal-connector';
-import { BehaviorSubject, merge, Observer, Subject, switchMap } from 'rxjs';
+import { BehaviorSubject, merge, Observer, Subject, Subscription, switchMap } from 'rxjs';
 import { NgxWebSerial, provideNgxWebSerial } from 'ngx-web-serial';
 
 @Injectable({
@@ -10,6 +10,9 @@ export class WebSerialService implements TerminalConnector {
 
   // added connection state and subscription holder
   private connected$ = new BehaviorSubject<boolean>(false);
+  private dataSubscription?: Subscription;
+  private connSubscription?: Subscription;
+
 
   constructor(private serial: NgxWebSerial) { }
 
@@ -18,15 +21,22 @@ export class WebSerialService implements TerminalConnector {
   }
 
   public connect(observable: Observer<Object>, host?: string) {
-    // Open the serial port, then subscribe to the data stream
-    this.serial.open().pipe(
+    this.connSubscription = this.serial.isConnected().subscribe(connected => {
+      this.connected$.next(connected)
+      if (!connected) {
+        this.connSubscription?.unsubscribe();
+        this.dataSubscription?.unsubscribe();
+      }
+    });
+    this.dataSubscription = this.serial.open().pipe(
       switchMap(() => (this.serial).read())
     ).subscribe(observable);
-    this.serial.isConnected().subscribe(this.connected$);
   }
 
   disconnect() {
     this.serial.close();
+    this.dataSubscription?.unsubscribe();
+    this.connSubscription?.unsubscribe();
   }
 
   write(data: string): void {

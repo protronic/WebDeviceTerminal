@@ -11,15 +11,16 @@ import { NgxWebSerial } from 'ngx-web-serial';
 const JsonCompact = new JsonCompactPipe();
 
 @Component({
-    selector: 'app-root',
-    templateUrl: './app.component.html',
-    styleUrls: ['./app.component.css'],
-    standalone: false
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
+  standalone: false
 })
 
 export class AppComponent implements AfterViewInit, Observer<Object> {
   readonly title = 'ble-terminal';
   readonly prompt = '\n' + FunctionsUsingCSI.cursorColumn(1) + '$ ';
+  readonly connect_prompt = '\n' + FunctionsUsingCSI.cursorColumn(1) + '# ';
   @ViewChild('interm', { static: false }) inchild!: NgTerminal;
   @ViewChild('outerm', { static: false }) outchild!: NgTerminal;
   buffer = '';
@@ -39,9 +40,22 @@ export class AppComponent implements AfterViewInit, Observer<Object> {
             this.connectionService = undefined;
             break;
 
-          default:  // Alle weiteren Eingaben werden gesendet
+          case '\u007f': // Delete (When Backspace is pressed)
+            if (this.outchild.underlying!.buffer.active.cursorX > 2) {
+              this.outchild.write('\b \b');
+              this.buffer = this.buffer.substring(0, this.buffer.length - 1);
+            }
+            break;
+
+          case '\r': // Carriage Return (When Enter is pressed)
+            this.connectionService.write(this.buffer + '\n');
+            this.buffer = ''; // Puffer leeren
+            this.outchild.write(this.connect_prompt); // Neuer Promt
+            break
+
+          default:  // Alle weiteren Eingaben werden gepuffert
             this.outchild.write(input);
-            this.connectionService.write(input);
+            this.buffer += input;
             break;
         }
       } else
@@ -91,7 +105,7 @@ export class AppComponent implements AfterViewInit, Observer<Object> {
         if (this.connectionService?.isConnected()) {
 
         } else {
-          console.log('BLE connect');
+          console.log('WS connect');
           this.connectionService = new WsService();
           this.connectionService.connect(this, 'lsm6');
         }
@@ -102,7 +116,7 @@ export class AppComponent implements AfterViewInit, Observer<Object> {
         if (this.connectionService?.isConnected()) {
 
         } else {
-          console.log('BLE connect');
+          console.log('WebSerial connect');
           this.connectionService = new WebSerialService(this.serial);
           this.connectionService.connect(this);
         }
