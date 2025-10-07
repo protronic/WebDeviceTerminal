@@ -16,7 +16,7 @@ export class WsService implements TerminalConnector {
   }
 
   public connect(observable: Observer<Object>, host?: string) {
-    if (host == "mft.protronic-gmbh.com")
+    if (host == "mft.protronic-gmbh.de")
       this.url = 'wss://' + host + '/echo';
     else
       this.url = 'ws://' + host + ':8088/echo';
