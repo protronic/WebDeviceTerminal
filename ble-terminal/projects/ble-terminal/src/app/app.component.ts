@@ -230,7 +230,7 @@ export class AppComponent implements AfterViewInit, Observer<Object> {
           this.outchild.write('Database sync already running\r\n');
           break;
         }
-        this.db.sync('http://admin:admin@localhost:5984/cmd_history_db', {
+        this.db.sync('http://admin:admin@couchdb:5984/cmd_history_db', {
           live: true,
           retry: true
         }).on('change', (info) => {
@@ -291,8 +291,20 @@ export class AppComponent implements AfterViewInit, Observer<Object> {
 
       case 'clear':
       case 'cls':
-        this.outchild.write(FunctionsUsingCSI.eraseInDisplay + FunctionsUsingCSI.cursorColumn(1) + this.prompt);
+        this.outchild.write(FunctionsUsingCSI.eraseInDisplay(3) + this.prompt);
         break;
+      
+      case 'exit':
+        // Exit the application
+        if (this.connectionService?.isConnected()) {
+          this.connectionService.disconnect();
+          this.connectionService = undefined;
+        }
+        this.outchild.write('Exiting application...\r\n');
+        setTimeout(() => {
+          window.close();
+        }, 1000);
+        break;      
       
       case 'help':
       case 'h':
