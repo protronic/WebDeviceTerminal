@@ -35,6 +35,7 @@ export class AppComponent implements AfterViewInit, Observer<Object> {
   connectionService: TerminalConnector | undefined;
   private db: PouchDB.Database<LastCommands>;
   countUp = -1;
+  codebook: string = 'cmd_history'; // default document id for command history
 
   constructor(private serial: NgxWebSerial) {
     this.db = new PouchDB("db");
@@ -77,7 +78,7 @@ export class AppComponent implements AfterViewInit, Observer<Object> {
             const command = this.buffer;
             this.buffer = '';
             this.countUp = -1;
-            this.db.get("cmd_history").catch((err) => {
+            this.db.get(this.codebook).catch((err) => {
               if (err.name === 'not_found') {
                 return this.newCmdHistoryDoc();
               } else
@@ -117,7 +118,7 @@ export class AppComponent implements AfterViewInit, Observer<Object> {
     });
   }
   removeFromHistory(s: string) {
-    this.db.get("cmd_history").then(doc => {
+    this.db.get(this.codebook).then(doc => {
       const index = doc.history.indexOf(s);
       if (index !== -1) {
         doc.history.splice(index, 1);
@@ -146,14 +147,14 @@ export class AppComponent implements AfterViewInit, Observer<Object> {
 
   private newCmdHistoryDoc(): PouchDB.Core.Document<LastCommands> {
     return {
-      _id: `cmd_history`,
+      _id: this.codebook,
       type: "last_commands",
       history: new Array<string>(),
     };
   }
 
   private historyToBuffer(index: number) {
-    return this.db.get("cmd_history").then(doc => {
+    return this.db.get(this.codebook).then(doc => {
       index = Math.min(index, doc.history.length - 1);
       index = Math.max(index, -1);
       this.countUp = index;
@@ -170,7 +171,19 @@ export class AppComponent implements AfterViewInit, Observer<Object> {
   }
 
   private handleBuffer() {
-    switch (this.buffer) { // Parsen von Steuerer Befehlen aus Puffer
+    //split the buffer into command and arguments
+    const parts = this.buffer.split(' ');
+    const command = parts[0];
+    const args = parts.slice(1);
+    console.log('Command: ' + command + ' codebook: ' + args);
+    this.outchild.write('\r\nYou entered: ' + this.buffer + this.prompt);  
+    // Arg to global variable if needed in future expansions only if arg exist
+    if (args.length > 0)
+      this.codebook = args.join(' '); 
+    else
+      this.codebook = 'cmd_history'; // reset to default if no arg
+    this.countUp = -1;
+    switch (command) { // Je nach Befehl werden die entsprechenden Funktionen ausgeführt
       case 'connect':
       case 'con':
       case 'ble':
