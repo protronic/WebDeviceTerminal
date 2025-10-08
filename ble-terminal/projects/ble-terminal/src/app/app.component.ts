@@ -310,11 +310,13 @@ export class AppComponent implements AfterViewInit, Observer<Object> {
       case 'h':
       case '?':
         this.outchild.write(       
-          '# Prompt when connected to a device\r\n' +
+          '\r\n# Prompt when connected to a device\r\n' +
           '$ Prompt following available commands:\r\n' +           
-          ' connect|con|ble|bluetooth  Connect to a BLE device\r\n' +
-          ' ws|wss                     Connect to a WebSocket server\r\n' +
-          ' serial|ser                 Connect to a Serial device\r\n' +
+          ' connect|con|ble|bluetooth  xxx   Connect to a BLE device\r\n' +
+          ' ws|wss                     xxx   Connect to a WebSocket server\r\n' +
+          ' serial|ser                 xxx   Connect to a Serial device\r\n' +
+          '                            xxx = selects the codebook to use\r\n' +
+          ' Codebook following available commands:\r\n' + 
           ' sync                       Synchronize the command history with the CouchDB server\r\n' +
           ' list|ls                    List available codebooks or commands in the current codebook\r\n' +
           ' remove|rm                  Remove the current codebook (cannot remove default codebook)\r\n' +
