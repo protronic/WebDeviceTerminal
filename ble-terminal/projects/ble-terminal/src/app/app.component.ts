@@ -38,7 +38,7 @@ export class AppComponent implements AfterViewInit, Observer<Object> {
   codebook: string = 'cmd_history'; // default document id for command history
 
   constructor(private serial: NgxWebSerial) {
-    this.db = new PouchDB("db");
+    this.db = new PouchDB("cmd_history_db");
   }
 
   ngAfterViewInit(): void {
@@ -176,10 +176,9 @@ export class AppComponent implements AfterViewInit, Observer<Object> {
     const command = parts[0];
     const args = parts.slice(1);
     console.log('Command: ' + command + ' codebook: ' + args);
-    this.outchild.write('\r\nYou entered: ' + this.buffer + this.prompt);  
     // Arg to global variable if needed in future expansions only if arg exist
     if (args.length > 0)
-      this.codebook = args.join(' '); 
+      this.codebook = args.join(' ');
     else
       this.codebook = 'cmd_history'; // reset to default if no arg
     this.countUp = -1;
@@ -217,6 +216,104 @@ export class AppComponent implements AfterViewInit, Observer<Object> {
           this.connectionService = new WebSerialService(this.serial);
           this.connectionService.connect(this);
         }
+        break;
+
+      case 'sync':
+        // Synchronisation der Datenbank mit einem CouchDB Server wenn kein codebook angegeben ist
+        // oder synchronisation des angegebenen codebooks
+        if (this.codebook !== 'cmd_history') {
+          this.outchild.write('Database sync only available for default codebook\r\n');
+          break;
+        }
+        // Sync nur starten wenn noch kein Sync läuft
+        if ((this.db as any)._replicationStates && Object.keys((this.db as any)._replicationStates).length > 0) {
+          this.outchild.write('Database sync already running\r\n');
+          break;
+        }
+        this.db.sync('http://admin:admin@localhost:5984/cmd_history_db', {
+          live: true,
+          retry: true
+        }).on('change', (info) => {
+          console.log('Sync change:' + JSON.stringify(info));
+        }).on('paused', (err) => {
+          console.log('Sync paused:' + JSON.stringify(err));
+        }).on('active', () => {
+          console.log('Sync active');
+        }).on('denied', (err) => {
+          console.log('Sync denied:' + JSON.stringify(err));
+        }).on('complete', (info) => {
+          console.log('Sync complete:' + JSON.stringify(info));
+          this.outchild.write('Database sync completed\r\n' + this.prompt);
+        }).on('error', (err) => {
+          console.log('Sync error:' + JSON.stringify(err));
+        });
+        this.outchild.write('Database sync started\r\n');
+        break;
+
+      case 'list':
+      case 'ls':
+        // Ausgabe der Befehls-History nur wenn ein codebook angegeben ist
+        // oder liste der codebooks wenn kein codebook angegeben ist
+        if (this.codebook === 'cmd_history') {
+          this.outchild.write('\r\nAvailable codebooks:\r\n');
+          this.db.allDocs({ include_docs: false }).then(result => {
+            result.rows.forEach(row => {
+              this.outchild.write(` - ${row.id}\r\n`);
+            });
+            this.outchild.write(this.prompt);
+          }).catch(err => console.log(err));
+          break;
+        } else {
+          this.db.get(this.codebook).then(doc => {
+            this.outchild.write('Command history:\r\n');
+            doc.history.forEach((cmd, index) => {
+              this.outchild.write(` ${index}: ${cmd}\r\n`);
+            });
+            this.outchild.write(this.prompt);
+          }).catch(err => console.log(err));
+        }
+        break;
+
+      case 'remove':
+      case 'rm':
+        // Löschen des angegebenen codebooks
+        if (this.codebook === 'cmd_history') {
+          this.outchild.write('Cannot remove default codebook\r\n');
+          break;
+        }
+        this.db.get(this.codebook).then(doc => {
+          return this.db.remove(doc);
+        }).then(() => {
+          this.outchild.write(`Codebook ${this.codebook} removed\r\n`);
+          this.codebook = 'cmd_history'; // reset to default
+        }).catch(err => console.log(err));
+        break;
+
+      case 'clear':
+      case 'cls':
+        this.outchild.write(FunctionsUsingCSI.eraseInDisplay + FunctionsUsingCSI.cursorColumn(1) + this.prompt);
+        break;
+      
+      case 'help':
+      case 'h':
+      case '?':
+        this.outchild.write(
+          'Available commands:\r\n' +
+          ' connect|con|ble|bluetooth   Connect to a BLE device\r\n' +
+          ' ws|wss                     Connect to a WebSocket server\r\n' +
+          ' serial|ser                 Connect to a Serial device\r\n' +
+          ' sync                       Synchronize the command history with the CouchDB server\r\n' +
+          ' list|ls                    List available codebooks or commands in the current codebook\r\n' +
+          ' remove|rm                  Remove the current codebook (cannot remove default codebook)\r\n' +
+          ' clear|cls                  Clear the terminal screen\r\n' +
+          ' help|h|?                   Show this help message\r\n' +
+          ' Press Ctrl+C to disconnect from the current connection\r\n' +
+          this.prompt
+        );        
+        break;
+
+      case '':
+        // Nur Enter wurde gedrückt
         break;
 
       default: // Falls sich kein Befahlt im Puffer befindet wird gesendet
