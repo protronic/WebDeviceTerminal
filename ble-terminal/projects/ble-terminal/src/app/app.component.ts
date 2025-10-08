@@ -230,7 +230,7 @@ export class AppComponent implements AfterViewInit, Observer<Object> {
           this.outchild.write('\r\nDatabase sync already running\r\n');
           break;
         }
-        this.db.sync('http://admin:admin@couchdb:5984/cmd_history_db', {
+        this.db.sync('http://couchdb/couchdb/cmd_history_db', {
           live: true,
           retry: true
         }).on('change', (info) => {
@@ -312,7 +312,7 @@ export class AppComponent implements AfterViewInit, Observer<Object> {
         this.outchild.write(       
           '# Prompt when connected to a device\r\n' +
           '$ Prompt following available commands:\r\n' +           
-          ' connect|con|ble|bluetooth   Connect to a BLE device\r\n' +
+          ' connect|con|ble|bluetooth  Connect to a BLE device\r\n' +
           ' ws|wss                     Connect to a WebSocket server\r\n' +
           ' serial|ser                 Connect to a Serial device\r\n' +
           ' sync                       Synchronize the command history with the CouchDB server\r\n' +

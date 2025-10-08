@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "start-http": "http-server -o --cors ./dist/ble-terminal ./dist/ble-terminal/browser",
+    "start-http": "ng build && http-server -o --cors ./dist/ble-terminal ./dist/ble-terminal/browser",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "update:angular": "ng update --allow-dirty @angular/cli @angular/core",
