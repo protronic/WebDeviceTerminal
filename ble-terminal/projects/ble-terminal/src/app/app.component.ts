@@ -222,12 +222,12 @@ export class AppComponent implements AfterViewInit, Observer<Object> {
         // Synchronisation der Datenbank mit einem CouchDB Server wenn kein codebook angegeben ist
         // oder synchronisation des angegebenen codebooks
         if (this.codebook !== 'cmd_history') {
-          this.outchild.write('Database sync only available for default codebook\r\n');
+          this.outchild.write('\r\nDatabase sync only available for default codebook\r\n');
           break;
         }
         // Sync nur starten wenn noch kein Sync läuft
         if ((this.db as any)._replicationStates && Object.keys((this.db as any)._replicationStates).length > 0) {
-          this.outchild.write('Database sync already running\r\n');
+          this.outchild.write('\r\nDatabase sync already running\r\n');
           break;
         }
         this.db.sync('http://admin:admin@couchdb:5984/cmd_history_db', {
