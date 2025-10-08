@@ -309,8 +309,9 @@ export class AppComponent implements AfterViewInit, Observer<Object> {
       case 'help':
       case 'h':
       case '?':
-        this.outchild.write(
-          'Available commands:\r\n' +
+        this.outchild.write(       
+          '# Prompt when connected to a device\r\n' +
+          '$ Prompt following available commands:\r\n' +           
           ' connect|con|ble|bluetooth   Connect to a BLE device\r\n' +
           ' ws|wss                     Connect to a WebSocket server\r\n' +
           ' serial|ser                 Connect to a Serial device\r\n' +
