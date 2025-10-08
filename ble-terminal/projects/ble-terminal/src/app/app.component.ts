@@ -10,7 +10,7 @@ import { NgxWebSerial } from 'ngx-web-serial';
 import PouchDB from 'pouchdb';
 
 const JsonCompact = new JsonCompactPipe();
-
+const historyLength = 10;
 export type LastCommands = {
   type: "last_commands"
   history: string[]
@@ -135,7 +135,7 @@ export class AppComponent implements AfterViewInit, Observer<Object> {
       // Wenn der Befehl existiert, diesen aus der History entfernen
       doc.history.splice(index, 1);
     }
-    if (doc.history.length >= 10) {
+    if (doc.history.length >= historyLength) {
       doc.history.shift(); // Ältesten Befehl entfernen, wenn die History 50 Einträge überschreitet
     }
     if (command.length > 0) {
