@@ -218,9 +218,9 @@ export class AppComponent implements AfterViewInit, Observer<Object> {
         }
         break;
 
-      case 'sync':
+      case 'sync':        
         // Synchronisation der Datenbank mit einem CouchDB Server wenn kein codebook angegeben ist
-        // oder synchronisation des angegebenen codebooks
+        // oder synchronisation des angegebenen codebooks            
         if (this.codebook !== 'cmd_history') {
           this.outchild.write('\r\nDatabase sync only available for default codebook\r\n');
           break;
@@ -243,11 +243,12 @@ export class AppComponent implements AfterViewInit, Observer<Object> {
           console.log('Sync denied:' + JSON.stringify(err));
         }).on('complete', (info) => {
           console.log('Sync complete:' + JSON.stringify(info));
-          this.outchild.write('Database sync completed\r\n' + this.prompt);
+          this.outchild.write('Database sync completed');
         }).on('error', (err) => {
           console.log('Sync error:' + JSON.stringify(err));
         });
-        this.outchild.write('Database sync started\r\n');
+        this.outchild.write('\r\nDatabase sync started');
+        this.outchild.write(this.prompt); // Neuer Promt
         break;
 
       case 'list':
@@ -293,7 +294,7 @@ export class AppComponent implements AfterViewInit, Observer<Object> {
       case 'cls':
         this.outchild.write(FunctionsUsingCSI.eraseInDisplay(3) + this.prompt);
         break;
-      
+
       case 'exit':
         // Exit the application
         if (this.connectionService?.isConnected()) {
@@ -304,19 +305,19 @@ export class AppComponent implements AfterViewInit, Observer<Object> {
         setTimeout(() => {
           window.close();
         }, 1000);
-        break;      
-      
+        break;
+
       case 'help':
       case 'h':
       case '?':
-        this.outchild.write(       
+        this.outchild.write(
           '\r\n# Prompt when connected to a device\r\n' +
-          '$ Prompt following available commands:\r\n' +           
+          '$ Prompt following available commands:\r\n' +
           ' connect|con|ble|bluetooth  xxx   Connect to a BLE device\r\n' +
           ' ws|wss                     xxx   Connect to a WebSocket server\r\n' +
           ' serial|ser                 xxx   Connect to a Serial device\r\n' +
           '                            xxx = selects the codebook to use\r\n' +
-          ' Codebook following available commands:\r\n' + 
+          ' Codebook following available commands:\r\n' +
           ' sync                       Synchronize the command history with the CouchDB server\r\n' +
           ' list|ls                    List available codebooks or commands in the current codebook\r\n' +
           ' remove|rm                  Remove the current codebook (cannot remove default codebook)\r\n' +
@@ -324,19 +325,17 @@ export class AppComponent implements AfterViewInit, Observer<Object> {
           ' help|h|?                   Show this help message\r\n' +
           ' Press Ctrl+C to disconnect from the current connection\r\n' +
           this.prompt
-        );        
+        );
         break;
 
       case '':
-        // Nur Enter wurde gedrückt
-        break;
-
+      // Nur Enter wurde gedrückt
       default: // Falls sich kein Befahlt im Puffer befindet wird gesendet
-        // console.log('BLE write:' + this.buffer);
-        // this.ble.write(this.buffer);        
-        this.outchild.write(this.prompt); // Neuer Promt
+        this.outchild.write(this.prompt);       
         break;
     }
+    // console.log('BLE write:' + this.buffer);
+    // this.ble.write(this.buffer);        
     this.buffer = ''; // Puffer leeren
   }
 
