@@ -35,7 +35,14 @@ export class WsService implements TerminalConnector {
 
   write(data: string): void {
     if (this.isConnected()) {
-      this.wsSubject.next(data);
+      console.log('WS send: ' + data);
+      let o: any = data
+      try {
+        o = JSON.parse(data);
+      } catch (e) {
+        // not json
+      }
+      this.wsSubject.next(o);
     }
   }
 }

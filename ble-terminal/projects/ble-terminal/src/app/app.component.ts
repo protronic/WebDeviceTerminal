@@ -74,8 +74,8 @@ export class AppComponent implements AfterViewInit, Observer<Object> {
             break;
 
           case '\r': // Enter
-            this.connectionService.write(this.buffer + '\r\n');
             const command = this.buffer;
+            this.connectionService.write(command + '\r\n');            
             this.buffer = '';
             this.countUp = -1;
             this.db.get(this.codebook).catch((err) => {
@@ -175,11 +175,14 @@ export class AppComponent implements AfterViewInit, Observer<Object> {
     const parts = this.buffer.split(' ');
     const command = parts[0];
     const args = parts.slice(1);
-    console.log('Command: ' + command + ' codebook: ' + args);
+    let url = 'mft.protronic-gmbh.de'; // default WS URL
+    console.log('Command: ' + command + ' args: ' + args);
     // Arg to global variable if needed in future expansions only if arg exist
-    if (args.length > 0)
-      this.codebook = args.join(' ');
-    else
+    if (args.length > 0) {
+      this.codebook = args[0];
+      if (args.length > 1)
+        url = args[1];
+    } else
       this.codebook = 'cmd_history'; // reset to default if no arg
     this.countUp = -1;
     switch (command) { // Je nach Befehl werden die entsprechenden Funktionen ausgeführt
@@ -203,7 +206,7 @@ export class AppComponent implements AfterViewInit, Observer<Object> {
         } else {
           console.log('WS connect');
           this.connectionService = new WsService();
-          this.connectionService.connect(this, 'mft.protronic-gmbh.de');
+          this.connectionService.connect(this, url);
         }
         break;
 
@@ -218,7 +221,7 @@ export class AppComponent implements AfterViewInit, Observer<Object> {
         }
         break;
 
-      case 'sync':        
+      case 'sync':
         // Synchronisation der Datenbank mit einem CouchDB Server wenn kein codebook angegeben ist
         // oder synchronisation des angegebenen codebooks            
         if (this.codebook !== 'cmd_history') {
@@ -313,9 +316,9 @@ export class AppComponent implements AfterViewInit, Observer<Object> {
         this.outchild.write(
           '\r\n# Prompt when connected to a device\r\n' +
           '$ Prompt following available commands:\r\n' +
-          ' connect|con|ble|bluetooth  xxx   Connect to a BLE device\r\n' +
-          ' ws|wss                     xxx   Connect to a WebSocket server\r\n' +
-          ' serial|ser                 xxx   Connect to a Serial device\r\n' +
+          ' connect|con|ble|bluetooth  xxx      Connect to a BLE device\r\n' +
+          ' ws|wss                     xxx URL  Connect to a WebSocket server\r\n' +
+          ' serial|ser                 xxx      Connect to a Serial device\r\n' +
           '                            xxx = selects the codebook to use\r\n' +
           ' Codebook following available commands:\r\n' +
           ' sync                       Synchronize the command history with the CouchDB server\r\n' +
@@ -331,7 +334,7 @@ export class AppComponent implements AfterViewInit, Observer<Object> {
       case '':
       // Nur Enter wurde gedrückt
       default: // Falls sich kein Befahlt im Puffer befindet wird gesendet
-        this.outchild.write(this.prompt);       
+        this.outchild.write(this.prompt);
         break;
     }
     // console.log('BLE write:' + this.buffer);
