@@ -1,6 +1,8 @@
+
 # WebDeviceTerminal
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 15.2.2.
+**Description:**  
+Angular-based terminal for managing web device APIs with CouchDB as the backend. Provides offline-first functionality and shareable history to support collaborative workflows and reliable data synchronization.
 
 ## Development server
 
