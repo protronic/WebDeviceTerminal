@@ -175,7 +175,7 @@ export class AppComponent implements AfterViewInit, Observer<Object> {
     const parts = this.buffer.split(' ');
     const command = parts[0];
     const args = parts.slice(1);
-    let url = 'mft.protronic-gmbh.de'; // default WS URL
+    let url;
     console.log('Command: ' + command + ' args: ' + args);
     // Arg to global variable if needed in future expansions only if arg exist
     if (args.length > 0) {
@@ -343,15 +343,14 @@ export class AppComponent implements AfterViewInit, Observer<Object> {
       this.outchild.write(this.connect_prompt);
     this.buffer = ''; // Puffer leeren
   }
-
-  next(bleMessage: Object) {            // Callback für Daten von BLE
-    console.log(bleMessage);
+  next(bleMessage: any) {            // Callback for incoming messages from connected device    
     this.outchild.write(this.connect_prompt);
-    if (typeof bleMessage === 'string')
+    if (typeof bleMessage === 'string') {
       this.inchild.write(bleMessage);
-    else
+      console.log(bleMessage);
+    } else
       this.inchild.write(JsonCompact.transform(bleMessage) + '\r\n');
   };
-  error(err: any) { this.next(err) };   // Callback für Felher vom BLE service
+  error(err: any) { this.next(err) };   // Callback for errors from connected device
   complete!: () => void;
 }

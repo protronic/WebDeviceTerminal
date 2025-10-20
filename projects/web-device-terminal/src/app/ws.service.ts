@@ -7,8 +7,8 @@ import { WebSocketSubject, webSocket } from 'rxjs/webSocket';
   providedIn: 'root'
 })
 export class WsService implements TerminalConnector {
-
-  public url = 'ws://lsm6:8088/echo';
+ 
+  public url = 'wss://mft.protronic-gmbh.de/echo';
   wsSubject!: WebSocketSubject<Object>;
 
   isConnected(): boolean {
@@ -16,14 +16,12 @@ export class WsService implements TerminalConnector {
   }
 
   public connect(observable: Observer<Object>, host?: string) {
-    if (host == "mft.protronic-gmbh.de")
-      this.url = 'wss://' + host + '/echo';
-    else
+    if (host !== undefined)
       this.url = 'ws://' + host + ':8088/echo';
-    console.log('LSM6_Chat: ' + this.url);
+    console.log('WS: ' + this.url);
     if (this.wsSubject && !this.wsSubject.closed) {
       this.wsSubject.complete();
-      console.log('LSM6_mes closed: ' + this.wsSubject.closed);
+      console.log('WS: ' + this.wsSubject.closed);
     }
     this.wsSubject = webSocket(this.url);
     this.wsSubject.subscribe(observable);
@@ -34,8 +32,7 @@ export class WsService implements TerminalConnector {
   }
 
   write(data: string): void {
-    if (this.isConnected()) {
-      console.log('WS send: ' + data);
+    if (this.isConnected()) {      
       let o: any = data
       try {
         o = JSON.parse(data);
@@ -43,6 +40,7 @@ export class WsService implements TerminalConnector {
         // not json
       }
       this.wsSubject.next(o);
+      console.log('WS send: ' + o);
     }
   }
 }
