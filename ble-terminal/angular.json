@@ -3,33 +3,33 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "ble-terminal": {
+    "web-device-terminal": {
       "projectType": "application",
       "schematics": {},
-      "root": "projects/ble-terminal",
-      "sourceRoot": "projects/ble-terminal/src",
+      "root": "projects/web-device-terminal",
+      "sourceRoot": "projects/web-device-terminal/src",
       "prefix": "app",
       "architect": {
         "build": {
           "builder": "@angular/build:application",
           "options": {
             "outputPath": {
-              "base": "dist/ble-terminal"
+              "base": "dist/web-device-terminal"
             },
-            "index": "projects/ble-terminal/src/index.html",
+            "index": "projects/web-device-terminal/src/index.html",
             "polyfills": [
               "zone.js"
             ],
-            "tsConfig": "projects/ble-terminal/tsconfig.app.json",
+            "tsConfig": "projects/web-device-terminal/tsconfig.app.json",
             "assets": [
-              "projects/ble-terminal/src/favicon.ico",
-              "projects/ble-terminal/src/assets"
+              "projects/web-device-terminal/src/favicon.ico",
+              "projects/web-device-terminal/src/assets"
             ],
             "styles": [
-              "projects/ble-terminal/src/styles.css"
+              "projects/web-device-terminal/src/styles.css"
             ],
             "scripts": [],
-            "browser": "projects/ble-terminal/src/main.ts"
+            "browser": "projects/web-device-terminal/src/main.ts"
           },
           "configurations": {
             "production": {
@@ -60,10 +60,10 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "ble-terminal:build:production"
+              "buildTarget": "web-device-terminal:build:production"
             },
             "development": {
-              "buildTarget": "ble-terminal:build:development"
+              "buildTarget": "web-device-terminal:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -71,7 +71,7 @@
         "extract-i18n": {
           "builder": "@angular/build:extract-i18n",
           "options": {
-            "buildTarget": "ble-terminal:build"
+            "buildTarget": "web-device-terminal:build"
           }
         },
         "test": {
@@ -81,13 +81,13 @@
               "zone.js",
               "zone.js/testing"
             ],
-            "tsConfig": "projects/ble-terminal/tsconfig.spec.json",
+            "tsConfig": "projects/web-device-terminal/tsconfig.spec.json",
             "assets": [
-              "projects/ble-terminal/src/favicon.ico",
-              "projects/ble-terminal/src/assets"
+              "projects/web-device-terminal/src/favicon.ico",
+              "projects/web-device-terminal/src/assets"
             ],
             "styles": [
-              "projects/ble-terminal/src/styles.css"
+              "projects/web-device-terminal/src/styles.css"
             ],
             "scripts": []
           }

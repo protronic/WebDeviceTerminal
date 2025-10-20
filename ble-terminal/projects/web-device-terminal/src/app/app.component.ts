@@ -24,7 +24,7 @@ export type LastCommands = {
 })
 
 export class AppComponent implements AfterViewInit, Observer<Object> {
-  readonly title = 'ble-terminal';
+  readonly title = 'web-device-terminal';
   readonly prompt = '\n' + FunctionsUsingCSI.cursorColumn(1) + '$ ';
   readonly connect_prompt = '\n' + FunctionsUsingCSI.cursorColumn(1) + '# ';
   readonly connect_prompt_cl = FunctionsUsingCSI.eraseInLine(2) + FunctionsUsingCSI.cursorColumn(1) + '# ';
@@ -309,7 +309,7 @@ export class AppComponent implements AfterViewInit, Observer<Object> {
           window.close();
         }, 1000);
         break;
-
+        
       case 'help':
       case 'h':
       case '?':
