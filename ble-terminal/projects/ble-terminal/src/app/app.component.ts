@@ -339,6 +339,8 @@ export class AppComponent implements AfterViewInit, Observer<Object> {
     }
     // console.log('BLE write:' + this.buffer);
     // this.ble.write(this.buffer);        
+    if(this.connectionService?.isConnected())
+      this.outchild.write(this.connect_prompt);
     this.buffer = ''; // Puffer leeren
   }
 
