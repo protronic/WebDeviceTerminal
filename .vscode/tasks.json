@@ -3,6 +3,19 @@
   "version": "2.0.0",
   "tasks": [
     {
+      "label": "Start App",
+      "type": "shell",
+      "command": "bash",
+      "args": [
+        "-c",
+        "source $HOME/.nvm/nvm.sh && nvm use && yarn run start"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    },
+    {
       "type": "npm",
       "script": "start",
       "isBackground": true,
