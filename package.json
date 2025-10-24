@@ -5,11 +5,12 @@
     "ng": "ng",
     "start": "ng serve",
     "start-http": "ng build && http-server -o --cors ./dist/web-device-terminal ./dist/web-device-terminal/browser",
-    "build": "ng build",
+    "build": "ng build --configuration production --base-href ./",
     "watch": "ng build --watch --configuration development",
     "update:angular": "ng update --allow-dirty @angular/cli @angular/core",
     "update:libs": "ng update --allow-dirty @types/w3c-web-serial @types/web-bluetooth @manekinekko/angular-web-bluetooth ng-terminal ngx-web-serial",
     "update": "npm run update:angular && npm run update:libs",
+    "deploy": "node deploy.js",
     "test": "ng test"
   },
   "private": true,
