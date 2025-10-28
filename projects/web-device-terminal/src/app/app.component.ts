@@ -29,7 +29,7 @@ export class AppComponent implements AfterViewInit, Observer<Object> {
 
   @ViewChild('interm', { static: false }) inchild!: NgTerminal;
   @ViewChild('outerm', { static: false }) outchild!: NgTerminal;
-  buffer = '';
+  public buffer = '';
   connectionService: TerminalConnector | undefined;
   private db: PouchDB.Database<LastCommands>;
   countUp = -1;
@@ -43,90 +43,69 @@ export class AppComponent implements AfterViewInit, Observer<Object> {
     this.outchild.write(this.getPrompt());
     this.outchild.onData().subscribe((input) => { // Callback für Eingaben im Terminal
       const cb = this.connectionService?.isConnected() ? this.codebook : default_codebook;
-      let bufferCurrentChar: boolean | undefined = undefined;
       switch (input) {
         case '\u007f': // Delete (When Backspace is pressed)
           if (this.outchild.underlying!.buffer.active.cursorX > 2) {
             this.outchild.write('\b \b');
             this.buffer = this.buffer.substring(0, this.buffer.length - 1);
           }
-          bufferCurrentChar = false;
           break;
 
         case '\u001b[A': // Arrow Up
           this.outchild.write(this.getPrompt(true));
           this.historyToBuffer(++this.countUp, cb);
-          bufferCurrentChar = false;
           break;
 
         case '\u001b[B': // Arrow Down
           this.outchild.write(this.getPrompt(true));
           this.historyToBuffer(--this.countUp, cb);
-          bufferCurrentChar = false;
           break;
 
         case '\u001b[3~': // Entf  (When Delete is pressed)
           this.outchild.write(this.getPrompt(true));
           this.removeFromHistory(this.buffer, cb);
-          bufferCurrentChar = false;
           break;
-      }
-      if (this.connectionService?.isConnected()) { // Wenn verbunden werden Eingaben gepuffert und mit Enter abgeschickt
-        switch (input) {
-          case '\u0003':   // End of Text (When Ctrl and C are pressed) disconnect BLE
+
+        case '\r': // Carriage Return (When Enter is pressed)
+          this.sendCommand()
+          break;
+
+        case '\u0003':   // End of Text (When Ctrl and C are pressed) disconnect BLE
+          if (this.connectionService?.isConnected()) {
             this.connectionService.disconnect();
             this.connectionService = undefined;
-            break;
-
-          case '\r': // Enter
-            const command = this.buffer;
-            this.connectionService.write(command + '\r\n');
-            this.buffer = '';
-            this.countUp = -1;
-            this.db.get(this.codebook).catch((err) => {
-              if (err.name === 'not_found') {
-                return this.newCmdHistoryDoc();
-              } else
-                throw err;
-            }).then(doc => this.db.put(this.appendCmd(doc, command))).catch(console.log);
-            break;
-
-          default:  // Alle weiteren Eingaben werden gepuffert
-            if (bufferCurrentChar === undefined)
-              bufferCurrentChar = true;
-            break;
-        }
-      } else {
-        switch (input) {
-          case '\r': // Carriage Return (When Enter is pressed)
-            const command = this.buffer;
-            this.db.get(default_codebook).catch((err) => {
-              if (err.name === 'not_found') {
-                return this.newCmdHistoryDoc();
-              } else
-                throw err;
-            }).then(doc => this.db.put(this.appendCmd(doc, command))).catch(console.log);
-            this.handleBuffer();
-            break;
-
-          case '\u0003':   // End of Text (When Ctrl and C are pressed)
+          } else {
             this.outchild.write('^C');
             this.outchild.write(this.getPrompt());
             this.buffer = '';
-            break;
+          }
+          break;
 
-          default:  // Alle weiteren Eingaben werden gepuffert
-            if (bufferCurrentChar === undefined)
-              bufferCurrentChar = true;
-            break;
-        }
-      }
-      if (bufferCurrentChar) {
-        this.outchild.write(input);
-        this.buffer += input;
+        default:
+          this.outchild.write(input);
+          this.buffer += input;
+          break;
       }
     });
   }
+  public sendCommand() {
+    const command = this.buffer;
+    const cb = this.connectionService?.isConnected() ? this.codebook : default_codebook;
+    if (this.connectionService?.isConnected())
+      this.connectionService?.write(command + '\r\n');
+    else
+      this.handleBuffer();
+    this.buffer = '';
+    this.countUp = -1;
+    this.db.get(cb).catch((err) => {
+      if (err.name === 'not_found') {
+        return this.newCmdHistoryDoc();
+      }
+      else
+        throw err;
+    }).then(doc => this.db.put(this.appendCmd(doc, command))).catch(console.log);
+  }
+
   getPrompt(clearLine: boolean = false): string {
     const prompt = FunctionsUsingCSI.cursorColumn(1) + '$ ';
     const connect_prompt = FunctionsUsingCSI.cursorColumn(1) + '# ';
@@ -251,7 +230,7 @@ export class AppComponent implements AfterViewInit, Observer<Object> {
           this.outchild.write('\r\nDatabase sync already running\r\n');
           break;
         }
-        this.db.sync('http://couchdb/couchdb/cmd_history_db', {
+        this.db.sync(window.location.protocol + '//couchdb/couchdb/cmd_history_db', {
           live: true,
           retry: true
         }).on('change', (info) => {

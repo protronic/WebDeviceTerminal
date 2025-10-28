@@ -6,6 +6,7 @@ import { NgTerminalModule } from 'ng-terminal';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { provideNgxWebSerial } from 'ngx-web-serial';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -14,7 +15,8 @@ import { provideNgxWebSerial } from 'ngx-web-serial';
   imports: [
     BrowserModule,
     AppRoutingModule,
-    NgTerminalModule,    
+    NgTerminalModule,   
+    FormsModule, 
     WebBluetoothModule.forRoot({
       enableTracing: true // or false, this will enable logs in the browser's console
     })

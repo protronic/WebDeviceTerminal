@@ -2,3 +2,7 @@ From Device:
 <ng-terminal #interm></ng-terminal>
 Input:
 <ng-terminal #outerm></ng-terminal>
+<div class="container">
+    <textarea [(ngModel)]="buffer" placeholder="Enter command here"  rows="4"></textarea>
+    <button (click)="sendCommand()">Send Command</button>
+</div>
