@@ -52,18 +52,15 @@ export class AppComponent implements AfterViewInit, Observer<Object> {
           break;
 
         case '\u001b[A': // Arrow Up
-          this.outchild.write(this.getPrompt(true));
-          this.historyToBuffer(++this.countUp, cb);
+          this.arrowUp();
           break;
 
         case '\u001b[B': // Arrow Down
-          this.outchild.write(this.getPrompt(true));
-          this.historyToBuffer(--this.countUp, cb);
+          this.arrowDown();
           break;
 
         case '\u001b[3~': // Entf  (When Delete is pressed)
-          this.outchild.write(this.getPrompt(true));
-          this.removeFromHistory(this.buffer, cb);
+          this.delPressed();
           break;
 
         case '\r': // Carriage Return (When Enter is pressed)
@@ -88,6 +85,25 @@ export class AppComponent implements AfterViewInit, Observer<Object> {
       }
     });
   }
+
+  public delPressed() {
+    const cb = this.connectionService?.isConnected() ? this.codebook : default_codebook;
+    this.outchild.write(this.getPrompt(true));
+    this.removeFromHistory(this.buffer, cb);
+  }
+
+  public arrowDown() {
+    const cb = this.connectionService?.isConnected() ? this.codebook : default_codebook;
+    this.outchild.write(this.getPrompt(true));
+    this.historyToBuffer(--this.countUp, cb);
+  }
+
+  public arrowUp() {
+    const cb = this.connectionService?.isConnected() ? this.codebook : default_codebook;
+    this.outchild.write(this.getPrompt(true));
+    this.historyToBuffer(++this.countUp, cb);
+  }
+
   public sendCommand() {
     const command = this.buffer;
     const cb = this.connectionService?.isConnected() ? this.codebook : default_codebook;

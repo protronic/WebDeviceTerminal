@@ -3,6 +3,6 @@ From Device:
 Input:
 <ng-terminal #outerm></ng-terminal>
 <div class="container">
-    <textarea [(ngModel)]="buffer" placeholder="Enter command here"  rows="4"></textarea>
+    <textarea [(ngModel)]="buffer" placeholder="Enter command here"  rows="4" (keydown.arrowdown)="arrowDown()" (keydown.arrowup)="arrowUp()" (keydown.control.enter)="sendCommand()"></textarea>
     <button (click)="sendCommand()">Send Command</button>
 </div>
