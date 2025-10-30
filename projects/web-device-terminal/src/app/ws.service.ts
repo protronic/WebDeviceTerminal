@@ -17,7 +17,7 @@ export class WsService implements TerminalConnector {
 
   public connect(observable: Observer<Object>, host?: string) {
     if (host !== undefined)
-      this.url = 'ws://' + host + ':8088/echo';
+      this.url = 'ws://' + host + ':8088';
     console.log('WS: ' + this.url);
     if (this.wsSubject && !this.wsSubject.closed) {
       this.wsSubject.complete();
